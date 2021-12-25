@@ -7,7 +7,7 @@ from protocol.interface import (
     RequestData,
 )
 
-REQUEST_TYPE = "PING"
+REQUEST_TYPE = "ping"
 
 
 class PingRequest(AbstractSerializableRequest[float]):
