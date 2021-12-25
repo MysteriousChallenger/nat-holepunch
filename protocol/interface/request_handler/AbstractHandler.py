@@ -6,9 +6,10 @@ from ..request.RequestData import RequestData
 
 PAYLOAD_TYPE = TypeVar("PAYLOAD_TYPE")
 RESPONSE_TYPE = TypeVar("RESPONSE_TYPE")
+CONTEXT_TYPE = TypeVar("CONTEXT_TYPE")
 
 
-class AbstractHandler(ABC, Generic[PAYLOAD_TYPE, RESPONSE_TYPE]):
+class AbstractHandler(ABC, Generic[PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE]):
 
     TYPE: ClassVar[str] = NotImplemented
     _handler_types: Dict[str, Type["AbstractHandler"]] = dict()
@@ -30,7 +31,7 @@ class AbstractHandler(ABC, Generic[PAYLOAD_TYPE, RESPONSE_TYPE]):
 
         AbstractHandler._handler_types[cls.TYPE] = cls
 
-    def __init__(self, **kwargs):
+    def __init__(self, context: CONTEXT_TYPE, **kwargs):
         pass
 
     @classmethod

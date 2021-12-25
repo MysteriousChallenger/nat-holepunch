@@ -19,6 +19,13 @@ class Serializable(abc.ABC):
     def to_json(self) -> dict:
         raise NotImplementedError
 
+class DefaultSerializable(Serializable,):
+    @classmethod
+    def from_json(cls, json: dict):
+        return cls(**json) # type: ignore
+
+    def to_json(self) -> dict:
+        return self.__dict__
 
 SerializableType = Union[
     List["SerializableType"],

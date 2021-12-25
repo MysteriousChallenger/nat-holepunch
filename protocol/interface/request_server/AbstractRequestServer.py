@@ -2,16 +2,16 @@ from abc import abstractmethod
 from typing import Any, Callable, Dict, Generic, NoReturn, Tuple, TypeVar
 
 from ..request import RequestData
-from ..request_handler import PAYLOAD_TYPE, RESPONSE_TYPE, AbstractHandler
+from ..request_handler import PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE, AbstractHandler
 
 
-class AbstractRequestServer(Generic[PAYLOAD_TYPE, RESPONSE_TYPE]):
+class AbstractRequestServer(Generic[PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE]):
     def __init__(self, **kwargs):
         self.request_handlers: dict[
-            str, AbstractHandler[PAYLOAD_TYPE, RESPONSE_TYPE]
+            str, AbstractHandler[PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE]
         ] = dict()
 
-    def register_handler(self, *handlers: AbstractHandler[PAYLOAD_TYPE, RESPONSE_TYPE]):
+    def register_handler(self, *handlers: AbstractHandler[PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE]):
         self.request_handlers = {
             **self.request_handlers,
             **{i.TYPE: i for i in handlers},

@@ -1,2 +1,2 @@
 from .Functions import *
-from .Serializable import Serializable, SerializableType, SerializableTypeVar
+from .Serializable import Serializable, DefaultSerializable, SerializableType, SerializableTypeVar

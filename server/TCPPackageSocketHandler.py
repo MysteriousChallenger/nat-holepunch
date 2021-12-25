@@ -1,21 +1,26 @@
 import socketserver
+import gc
 
-from server.PackageRequestEndpoint import PackageRequestEndpoint
-from socketIO import RequestPackage, ResponsePackage, TCPPackageSocket
-from socketIO.interface import Package
-
+from socketIO import RequestPackage, ResponsePackage, Package, TCPPackageSocket
+from .TCPPackageRequestEndpoint import TCPPackageRequestEndpoint
 
 class TCPPackageSocketHandler(socketserver.BaseRequestHandler):
+    def __init__(self, request, client_address, server, server_context: dict):
+        self.server_context = server_context
+        super().__init__(request, client_address, server)
+
     def setup(self):
         self.request_socket = TCPPackageSocket(_tcp_socket=self.request)
 
-        self.endpoint = PackageRequestEndpoint(self.request_socket)
+        self.endpoint = TCPPackageRequestEndpoint(self.request_socket, self.server_context)
 
     def handle(self):
-        print(self.endpoint.PING())
-        import time
         self.endpoint.wait_until_termination()
         print("connection terminated")
+
+    def finish(self) -> None:
+        del self.endpoint
+        gc.collect()
 
     @staticmethod
     def is_request(package: Package):

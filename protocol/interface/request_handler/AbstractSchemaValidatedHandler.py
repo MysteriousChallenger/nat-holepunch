@@ -3,14 +3,13 @@ import inspect
 from typing import Callable
 
 import jsonschema
-
 from util.typing import P
 
 from ..request import RequestData
-from .AbstractHandler import PAYLOAD_TYPE, RESPONSE_TYPE, AbstractHandler
+from .AbstractHandler import AbstractHandler, PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE
 
 
-class AbstractSchemaValidatedHandler(AbstractHandler[PAYLOAD_TYPE, RESPONSE_TYPE]):
+class AbstractSchemaValidatedHandler(AbstractHandler[PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE]):
 
     _payload_schema = NotImplemented
     _response_schema = NotImplemented

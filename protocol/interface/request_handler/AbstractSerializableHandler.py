@@ -1,15 +1,14 @@
 import inspect
-from typing import Dict, Type
+from typing import Dict, Generic, Type
 
 from jsonIO import SerializableType
 
-from .AbstractHandler import AbstractHandler
+from .AbstractHandler import CONTEXT_TYPE, AbstractHandler
 
-
-class AbstractSerializableHandler(AbstractHandler[SerializableType, SerializableType]):
+class AbstractSerializableHandler(AbstractHandler[SerializableType, SerializableType, CONTEXT_TYPE]):
 
     _handler_types: Dict[
-        str, Type[AbstractHandler[SerializableType, SerializableType]]
+        str, Type[AbstractHandler[SerializableType, SerializableType, CONTEXT_TYPE]]
     ] = dict()
 
     @classmethod

@@ -1,4 +1,4 @@
-from .AbstractHandler import PAYLOAD_TYPE, RESPONSE_TYPE, AbstractHandler
+from .AbstractHandler import PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE, AbstractHandler
 from .AbstractSchemaValidatedHandler import AbstractSchemaValidatedHandler
 from .AbstractSerializableHandler import AbstractSerializableHandler
 from .AbstractTimeoutHandler import AbstractTimeoutHandler
