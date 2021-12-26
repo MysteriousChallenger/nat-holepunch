@@ -7,9 +7,10 @@ from ..request_client import AbstractRequestClient
 PAYLOAD_TYPE = TypeVar("PAYLOAD_TYPE")
 RESPONSE_TYPE = TypeVar("RESPONSE_TYPE")
 RESULT_TYPE = TypeVar("RESULT_TYPE")
+CONTEXT_TYPE = TypeVar("CONTEXT_TYPE")
 
 
-class AbstractExecutableRequest(ABC, Generic[PAYLOAD_TYPE, RESPONSE_TYPE, RESULT_TYPE]):
+class AbstractExecutableRequest(ABC, Generic[PAYLOAD_TYPE, RESPONSE_TYPE, RESULT_TYPE, CONTEXT_TYPE]):
 
     TYPE: ClassVar[str] = NotImplemented
     _request_types: Dict[str, Type["AbstractExecutableRequest"]] = dict()
@@ -33,9 +34,10 @@ class AbstractExecutableRequest(ABC, Generic[PAYLOAD_TYPE, RESPONSE_TYPE, RESULT
             AbstractExecutableRequest._request_types[cls.TYPE] = cls
 
     def __init__(
-        self, client: AbstractRequestClient[PAYLOAD_TYPE, RESPONSE_TYPE], **kwargs
+        self, client: AbstractRequestClient[PAYLOAD_TYPE, RESPONSE_TYPE], context: CONTEXT_TYPE, **kwargs
     ):
         self.client = client
+        self.context = context
 
     def execute(self):
         payload = self.prepare_payload()

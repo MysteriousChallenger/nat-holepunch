@@ -4,18 +4,17 @@ from typing import Any, ClassVar, Dict, Generic, Type
 from jsonIO import SerializableType
 
 from .AbstractExecutableRequest import (
-    PAYLOAD_TYPE,
+    CONTEXT_TYPE,
     RESULT_TYPE,
     AbstractExecutableRequest,
 )
 
 
 class AbstractSerializableRequest(
-    AbstractExecutableRequest[SerializableType, SerializableType, RESULT_TYPE],
-    Generic[RESULT_TYPE],
+    AbstractExecutableRequest[SerializableType, SerializableType, RESULT_TYPE, CONTEXT_TYPE]
 ):
     TYPE: ClassVar[str] = NotImplemented
-    _request_types: Dict[str, Type["AbstractSerializableRequest[RESULT_TYPE]"]] = dict()
+    _request_types: Dict[str, Type["AbstractSerializableRequest[RESULT_TYPE, CONTEXT_TYPE]"]] = dict()
 
     @classmethod
     def __init_subclass__(cls, **kwargs):

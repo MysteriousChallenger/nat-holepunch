@@ -7,6 +7,7 @@ import jsonschema
 from util.typing import P
 
 from .AbstractExecutableRequest import (
+    CONTEXT_TYPE,
     PAYLOAD_TYPE,
     RESPONSE_TYPE,
     RESULT_TYPE,
@@ -14,7 +15,7 @@ from .AbstractExecutableRequest import (
 )
 
 
-class AbstractSchemaValidatedRequest(AbstractExecutableRequest[Any, Any, Any]):
+class AbstractSchemaValidatedRequest(AbstractExecutableRequest[PAYLOAD_TYPE, RESPONSE_TYPE, RESULT_TYPE, CONTEXT_TYPE]):
 
     PAYLOAD_SCHEMA = NotImplemented
     RESPONSE_SCHEMA = NotImplemented

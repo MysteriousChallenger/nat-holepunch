@@ -1,6 +1,7 @@
+from abc import abstractmethod
 import threading
 from types import MethodType
-from typing import Any, Dict, NoReturn
+from typing import Any, Dict, Generic, NoReturn
 from functools import wraps
 
 from jsonIO.Serializable import SerializableType
@@ -9,9 +10,11 @@ from protocol.interface import (
     AbstractRequestServer,
     AbstractSerializableHandler,
     AbstractSerializableRequest,
+    CONTEXT_TYPE,
     Promise,
     RequestData,
     request,
+
 )
 from socketIO import (
     GeneralPurposeSocket,
@@ -25,7 +28,7 @@ from socketIO.interface.socket.AbstractPackageSocket import (
 )
 from util.threading import Thread
 
-class PackageSocketRequestClient(AbstractRequestClient[SerializableType, SerializableType]):
+class PackageSocketRequestClient(AbstractRequestClient[SerializableType, SerializableType], Generic[CONTEXT_TYPE]):
     def __init__(self, socket: GeneralPurposeSocket, **kwargs):
         super(PackageSocketRequestClient, self).__init__()
         
@@ -87,6 +90,10 @@ class PackageSocketRequestClient(AbstractRequestClient[SerializableType, Seriali
         handler_thread.start()
         return handler_thread
 
+    @abstractmethod
+    def get_context(self) -> CONTEXT_TYPE:
+        raise NotImplementedError
+
     def init_requests(self):
         requests = list(AbstractSerializableRequest._request_types.values())
 
@@ -94,7 +101,7 @@ class PackageSocketRequestClient(AbstractRequestClient[SerializableType, Seriali
 
             @wraps(request.__init__)
             def init_and_run_request(self, *args, **kwargs):
-                request_instance = request(client=self, *args, **kwargs)
+                request_instance = request(client=self, context=self.get_context(), *args, **kwargs)
                 return request_instance.execute()
             
             return init_and_run_request

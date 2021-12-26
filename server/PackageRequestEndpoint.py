@@ -29,7 +29,7 @@ from .PackageSocketRequestClient import PackageSocketRequestClient
 from .PackageSocketRequestServer import PackageSocketRequestServer
 
 class PackageRequestEndpoint(
-    PackageSocketRequestClient,
+    PackageSocketRequestClient[CONTEXT_TYPE],
     PackageSocketRequestServer[CONTEXT_TYPE]
 ):
     def __init__(self, socket: GeneralPurposeSocket, **kwargs):
