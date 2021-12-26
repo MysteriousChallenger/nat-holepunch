@@ -1,5 +1,5 @@
 import time
-from typing import Dict
+from typing import Any, Dict
 
 from protocol.interface import (
     AbstractSerializableHandler,
@@ -10,7 +10,7 @@ from protocol.interface import (
 REQUEST_TYPE = "ping"
 
 
-class PingRequest(AbstractSerializableRequest[float]):
+class PingRequest(AbstractSerializableRequest[float, Any]):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 

@@ -1,6 +1,8 @@
 from protocol.interface import AbstractSerializableRequest
 
-class GetRegisteredClientsRequest(AbstractSerializableRequest[bool]):
+from server.TCPSocketServerContext import TCPSocketServerContext
+
+class GetRegisteredClientsRequest(AbstractSerializableRequest[bool, TCPSocketServerContext]):
 
     TYPE = 'get_registered_clients'
 

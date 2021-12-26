@@ -3,8 +3,9 @@ from protocol.interface import (
     RequestData,
 )
 from server.TCPSocketServerContext import TCPSocketServerContext
-from .util import get_registered_clients
 
+from .util import get_registered_clients
+from .RegisterClientRequestPayload import RegisterClientRequestPayload
 class RegisterClientHandler(AbstractSerializableHandler[TCPSocketServerContext]):
 
     TYPE = 'register_client'
@@ -15,8 +16,8 @@ class RegisterClientHandler(AbstractSerializableHandler[TCPSocketServerContext])
         self.registered_clients = get_registered_clients(self.context)
         self.name = None
 
-    def process_request(self, request: RequestData[str]) -> bool:
-        name = request.payload
+    def process_request(self, request: RequestData[RegisterClientRequestPayload]) -> bool:
+        name = request.payload['name']
 
         if name in self.registered_clients:
             return False
@@ -27,6 +28,7 @@ class RegisterClientHandler(AbstractSerializableHandler[TCPSocketServerContext])
         self.name = name
         socket = self.context.socket
         print(socket._tcp_socket.getpeername())
+        print(request.payload['addr'])
         self.registered_clients[name] = socket
         return True
 
