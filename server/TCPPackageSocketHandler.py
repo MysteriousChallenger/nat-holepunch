@@ -1,9 +1,8 @@
 import socketserver
-import gc
 
 from socketIO import RequestPackage, ResponsePackage, Package, TCPPackageSocket
-from .TCPPackageRequestEndpoint import TCPPackageRequestEndpoint
 
+from .TCPPackageRequestEndpoint import TCPPackageRequestEndpoint
 class TCPPackageSocketHandler(socketserver.BaseRequestHandler):
     def __init__(self, request, client_address, server, server_context: dict):
         self.server_context = server_context
@@ -19,8 +18,7 @@ class TCPPackageSocketHandler(socketserver.BaseRequestHandler):
         print("connection terminated")
 
     def finish(self) -> None:
-        del self.endpoint
-        gc.collect()
+        pass
 
     @staticmethod
     def is_request(package: Package):

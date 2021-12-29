@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from threading import Event
 from typing import Generic, TypeVar, Union
 
-T = TypeVar("T")
+from util.typing import T
+
 PAYLOAD_TYPE = TypeVar("PAYLOAD_TYPE")
 RESPONSE_TYPE = TypeVar("RESPONSE_TYPE")
 RESULT_TYPE = TypeVar("RESULT_TYPE")
@@ -21,12 +22,11 @@ class Promise(Event, Generic[T]):
         else:
             return self.default
 
-    def set(self, value: Union[T, None]):
+    def set(self, value: T = None):
         if value == None:
             value = self.default
         self.value = value
         super().set()
-
 
 class AbstractRequestClient(ABC, Generic[PAYLOAD_TYPE, RESPONSE_TYPE]):
     def __init__(self, **kwargs):

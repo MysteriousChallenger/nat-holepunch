@@ -1,18 +1,18 @@
 from socketIO import TCPPackageSocket
 
-from .TCPSocketServerContext import TCPSocketServerContext
+from .TCPPackageRequestServerContext import TCPPackageRequestServerContext
 from .PackageRequestEndpoint import PackageRequestEndpoint
 
-class TCPPackageRequestEndpoint(PackageRequestEndpoint[TCPSocketServerContext]):
+class TCPPackageRequestEndpoint(PackageRequestEndpoint[TCPPackageRequestServerContext]):
     def __init__(self, socket: TCPPackageSocket, server_context: dict, **kwargs):
         self.socket = socket 
-        self.socket_context = dict()
+        self.endpoint_context = dict()
         self.server_context = server_context
         super().__init__(socket = socket, **kwargs)
 
-    def get_context(self) -> TCPSocketServerContext:
-        return TCPSocketServerContext(
-            socket=self.socket, 
-            socket_context=self.socket_context, 
+    def get_context(self) -> TCPPackageRequestServerContext:
+        return TCPPackageRequestServerContext(
+            endpoint=self, 
+            endpoint_context=self.endpoint_context, 
             server_context=self.server_context)
         

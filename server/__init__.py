@@ -5,4 +5,4 @@ from .TCPPackageRequestEndpoint import TCPPackageRequestEndpoint
 from .TCPPackageRequestServer import TCPPackageRequestServer
 from .TCPPackageSocketHandler import TCPPackageSocketHandler
 from .TCPSocketServer import TCPSocketServer
-from .TCPSocketServerContext import TCPSocketServerContext
+from .TCPPackageRequestServerContext import TCPPackageRequestServerContext

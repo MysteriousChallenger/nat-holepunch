@@ -32,7 +32,7 @@ class AbstractHandler(ABC, Generic[PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE]):
         AbstractHandler._handler_types[cls.TYPE] = cls
 
     def __init__(self, context: CONTEXT_TYPE, **kwargs):
-        pass
+        self.context = context
 
     @classmethod
     def can_handle(cls, request: RequestData[PAYLOAD_TYPE]):
