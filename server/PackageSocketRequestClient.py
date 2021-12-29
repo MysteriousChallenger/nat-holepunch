@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from weakref import proxy
 from types import MethodType
 from typing import Dict, Generic
 from functools import wraps
@@ -99,7 +100,7 @@ class PackageSocketRequestClient(AbstractRequestClient[SerializableType, Seriali
             return init_and_run_request
 
         for request in requests:
-            setattr(self, request.TYPE, MethodType(request_factory(request), self))
+            setattr(self, request.TYPE, MethodType(request_factory(request), proxy(self)))
 
     def shutdown(self):
         self.response_socket.close()

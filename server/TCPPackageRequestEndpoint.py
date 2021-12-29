@@ -1,4 +1,5 @@
 from socketIO import TCPPackageSocket
+from weakref import proxy
 
 from .TCPPackageRequestServerContext import TCPPackageRequestServerContext
 from .PackageRequestEndpoint import PackageRequestEndpoint
@@ -12,7 +13,7 @@ class TCPPackageRequestEndpoint(PackageRequestEndpoint[TCPPackageRequestServerCo
 
     def get_context(self) -> TCPPackageRequestServerContext:
         return TCPPackageRequestServerContext(
-            endpoint=self, 
+            endpoint=proxy(self), 
             endpoint_context=self.endpoint_context, 
             server_context=self.server_context)
         
