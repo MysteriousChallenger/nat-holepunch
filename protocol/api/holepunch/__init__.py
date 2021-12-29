@@ -2,4 +2,6 @@ from .GetRegisteredClientsHandler import GetRegisteredClientsHandler
 from .GetRegisteredClientsRequest import GetRegisteredClientsRequest
 from .RegisterClientHandler import RegisterClientHandler
 from .RegisterClientRequest import RegisterClientRequest
-from .util import *
+from .ConnectToPeerHandler import ConnectToPeerHandler
+from .ConnectToPeerRequest import ConnectToPeerRequest
+from .context_descriptors import *

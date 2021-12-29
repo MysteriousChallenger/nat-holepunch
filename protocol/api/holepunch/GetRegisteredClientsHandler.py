@@ -1,19 +1,21 @@
-from typing import List
+from typing import Dict
+
 from protocol.interface import (
     AbstractSerializableHandler,
     RequestData,
 )
-from server.TCPSocketServerContext import TCPSocketServerContext
-from .util import get_registered_clients
+from server.TCPPackageRequestServerContext import TCPPackageRequestServerContext
 
-class GetRegisteredClientsHandler(AbstractSerializableHandler[TCPSocketServerContext]):
+from .context_descriptors import ClientAddressDict
+
+class GetRegisteredClientsHandler(AbstractSerializableHandler[TCPPackageRequestServerContext]):
 
     TYPE = 'get_registered_clients'
 
-    def __init__(self, context: TCPSocketServerContext, **kwargs):
-        super().__init__(context=context, **kwargs)
-        self.context = context
-        self.registered_clients = get_registered_clients(self.context)
+    client_address = ClientAddressDict()
 
-    def process_request(self, request: RequestData[None]) -> List[str]:
-        return sorted(list(self.registered_clients.keys()))
+    def __init__(self, context: TCPPackageRequestServerContext, **kwargs):
+        super().__init__(context=context, **kwargs)
+
+    def process_request(self, request: RequestData[None]) -> Dict:
+        return self.client_address

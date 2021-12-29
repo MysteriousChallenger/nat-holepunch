@@ -1,8 +1,8 @@
 from protocol.interface import AbstractSerializableRequest
 
-from server.TCPSocketServerContext import TCPSocketServerContext
+from server.TCPPackageRequestServerContext import TCPPackageRequestServerContext
 
-class GetRegisteredClientsRequest(AbstractSerializableRequest[bool, TCPSocketServerContext]):
+class GetRegisteredClientsRequest(AbstractSerializableRequest[bool, TCPPackageRequestServerContext]):
 
     TYPE = 'get_registered_clients'
 
@@ -13,5 +13,4 @@ class GetRegisteredClientsRequest(AbstractSerializableRequest[bool, TCPSocketSer
         return
 
     def process_response(self, response):
-        print(response)
         return response

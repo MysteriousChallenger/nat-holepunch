@@ -1,37 +1,42 @@
+from typing import List, Tuple
+
 from protocol.interface import (
     AbstractSerializableHandler,
     RequestData,
 )
-from server.TCPSocketServerContext import TCPSocketServerContext
+from server.TCPPackageRequestServerContext import TCPPackageRequestServerContext
 
-from .util import get_registered_clients
-from .RegisterClientRequestPayload import RegisterClientRequestPayload
-class RegisterClientHandler(AbstractSerializableHandler[TCPSocketServerContext]):
+from .context_descriptors import ClientAddressDict, ClientDict, ClientName
+from .types import RegisterClientRequestPayload, addr_type
+
+
+class RegisterClientHandler(AbstractSerializableHandler[TCPPackageRequestServerContext]):
 
     TYPE = 'register_client'
 
-    def __init__(self, context: TCPSocketServerContext, **kwargs):
-        super().__init__(context=context, **kwargs)
-        self.context = context
-        self.registered_clients = get_registered_clients(self.context)
-        self.name = None
+    client_address = ClientAddressDict()
+    clients = ClientDict()
+    name = ClientName()
 
-    def process_request(self, request: RequestData[RegisterClientRequestPayload]) -> bool:
-        name = request.payload['name']
-
-        if name in self.registered_clients:
-            return False
+    def process_request(self, request: RequestData[RegisterClientRequestPayload]) -> Tuple[bool, List[addr_type]]:
+        if request.payload['name'] in self.client_address:
+            return False, []
 
         if self.name != None:
-            del self.registered_clients[self.name]
+            del self.client_address[self.name]
+            del self.clients[self.name]
+
+        name = request.payload['name']
+        priv_addr = request.payload['addr']
+        pub_addr = self.context.endpoint.socket._tcp_socket.getpeername()
 
         self.name = name
-        socket = self.context.socket
-        print(socket._tcp_socket.getpeername())
-        print(request.payload['addr'])
-        self.registered_clients[name] = socket
-        return True
+        self.client_address[name] = [priv_addr, pub_addr]
+        self.clients[name] = self.context.endpoint
+
+        return True, [priv_addr, pub_addr]
 
     def __del__(self):
         if self.name != None:
-            del self.registered_clients[self.name]
+            del self.client_address[self.name]
+            del self.clients[self.name]
