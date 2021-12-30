@@ -34,11 +34,10 @@ class ConnectToPeerHandler(AbstractSerializableHandler[TCPPackageRequestServerCo
 
         if peer_name == self.name:
 
-            def register_peer():    
+            def register_peer():
                 socket_promise = get_holepunch_socket(local_addrs,remote_addrs)
-
                 tcp_socket = socket_promise.wait()
-
+                
                 if tcp_socket == None:
                     return
 

@@ -10,7 +10,7 @@ from socketIO.TCPPackageSocket import TCPPackageSocket
 
 from .context_descriptors import ClientAddressDict, ClientDict, RegisteredAddrs, RegisteredName
 from .types import ConnectToPeerRequestPayload, addr_type
-from .holepunch_util import accept_holepunch_socket, get_holepunch_socket
+from .holepunch_util import accept_holepunch_socket, connect_holepunch_socket, get_holepunch_socket
 
 class ConnectToPeerRequest(AbstractSerializableRequest[bool, TCPPackageRequestServerContext]):
 
@@ -36,6 +36,7 @@ class ConnectToPeerRequest(AbstractSerializableRequest[bool, TCPPackageRequestSe
             self.client_name = self.name
 
     def prepare_payload(self) -> ConnectToPeerRequestPayload:
+        self.socket_promise = accept_holepunch_socket(self.return_addrs)
         return {'peer_name': self.peer_name, 'client_name': self.client_name, 'return_addrs': self.return_addrs}
 
     def process_response(self, response: Tuple[bool, List[addr_type]]):
@@ -53,10 +54,10 @@ class ConnectToPeerRequest(AbstractSerializableRequest[bool, TCPPackageRequestSe
 
         if not success:
             return None
-
-        self.socket_promise = get_holepunch_socket(local_addrs,remote_addrs)
-
+            
+        self.socket_promise = connect_holepunch_socket(self.socket_promise, local_addrs,remote_addrs)
         tcp_socket = self.socket_promise.wait()
+        del self.socket_promise
 
         if tcp_socket == None:
             return None
