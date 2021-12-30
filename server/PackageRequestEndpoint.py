@@ -33,8 +33,8 @@ class PackageRequestEndpoint(
     PackageSocketRequestServer[CONTEXT_TYPE]
 ):
     def __init__(self, socket: GeneralPurposeSocket, **kwargs):
-        PackageSocketRequestClient.__init__(self, socket = socket, **kwargs)
         PackageSocketRequestServer.__init__(self, socket = socket, **kwargs)
+        PackageSocketRequestClient.__init__(self, socket = socket, **kwargs)
         self.is_alive = True
 
     def shutdown(self):
