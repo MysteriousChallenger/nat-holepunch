@@ -3,6 +3,7 @@ from weakref import proxy
 from types import MethodType
 from typing import Dict, Generic
 from functools import wraps
+import concurrent.futures
 
 from jsonIO.Serializable import SerializableType
 from protocol.interface import (
@@ -71,9 +72,10 @@ class PackageSocketRequestClient(AbstractRequestClient[SerializableType, Seriali
 
         def handler_loop():
             try:
-                while True:
-                    response_package = self.response_socket.recv()
-                    handle_response(response_package)
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    while True:
+                        response_package = self.response_socket.recv()
+                        executor.submit(handle_response, response_package)
             except PackageSocketShutdownException:
                 for promise in self.pending_requests.values():
                     promise.set(None)

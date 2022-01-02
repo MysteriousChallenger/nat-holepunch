@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from typing import Any, Callable, Dict, Generic, NoReturn, Tuple, TypeVar
+import concurrent.futures
 
 from ..request import RequestData
 from ..request_handler import PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE, AbstractHandler
@@ -25,6 +26,10 @@ class AbstractRequestServer(Generic[PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE]):
 
         return self.request_handlers[request.type].handle_request(request)
 
+    def answer_request(self, request: RequestData[PAYLOAD_TYPE]):
+        response = self.handle_request(request)
+        self.dispatch_response(request, response)
+
     @abstractmethod
     def get_request(self) -> RequestData[PAYLOAD_TYPE]:
         raise NotImplementedError
@@ -34,7 +39,7 @@ class AbstractRequestServer(Generic[PAYLOAD_TYPE, RESPONSE_TYPE, CONTEXT_TYPE]):
         raise NotImplementedError
 
     def serve(self):
-        while True:
-            request = self.get_request()
-            response = self.handle_request(request)
-            self.dispatch_response(request, response)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            while True:
+                request = self.get_request()
+                executor.submit(self.answer_request, request)
