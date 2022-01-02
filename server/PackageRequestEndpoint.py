@@ -42,6 +42,11 @@ class PackageRequestEndpoint(
         PackageSocketRequestServer.shutdown(self)
         self.is_alive = False
 
+    def detach(self):
+        PackageSocketRequestClient.detach(self)
+        PackageSocketRequestServer.detach(self)
+        self.is_alive = False
+
     def wait_until_termination(self):
         PackageSocketRequestClient.wait_until_termination(self)
         PackageSocketRequestServer.wait_until_termination(self)

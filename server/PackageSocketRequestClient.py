@@ -108,6 +108,10 @@ class PackageSocketRequestClient(AbstractRequestClient[SerializableType, Seriali
         self.response_socket.close()
         self.wait_until_termination()
 
+    def detach(self):
+        self.response_handler_thread.join(0)
+        self.wait_until_termination()
+
     def wait_until_termination(self):
         self.response_handler_thread.join()
         self.is_alive = False

@@ -84,6 +84,10 @@ class PackageSocketRequestServer(AbstractRequestServer[SerializableType, Seriali
         self.request_socket.close()
         self.wait_until_termination()
 
+    def detach(self):
+        self.request_handler_thread.join(0)
+        self.wait_until_termination()
+
     def wait_until_termination(self):
         self.request_handler_thread.join()
         self.is_alive = False
