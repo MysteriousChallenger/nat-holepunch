@@ -115,3 +115,35 @@ def _accept(socket_promise: Promise[socket.socket], addr: addr_type):
 
     t = threading.Thread(target=accept_job, daemon=True)
     t.start()
+
+def connect_to_addr(addr: addr_type):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(addr)
+    return s
+
+def accept_one_connection(addr: addr_type):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+    s.bind(addr)
+    s.setblocking(True)
+    conn, _ = s.accept()
+
+def pipe_sockets(source: socket.socket, sink: socket.socket):
+    source.setblocking(True)
+    sink.setblocking(True)
+    while True:
+        bytes = source.recv(1024)
+        if len(bytes)>0:
+            sink.sendall(bytes)
+        else:
+            source.shutdown(socket.SHUT_RD)
+            sink.shutdown(socket.SHUT_WR)
+            break
+
+def pipe_port_to_socket(laddr: addr_type, rsock: socket.socket):
+    s = accept_one_connection(laddr)
+    pipe_remote_to_client = threading.Thread(target = pipe_sockets, args=(rsock, s))
+    pipe_client_to_remote = threading.Thread(target = pipe_sockets, args=(s, rsock))
+    pipe_remote_to_client.start()
+    pipe_client_to_remote.start()

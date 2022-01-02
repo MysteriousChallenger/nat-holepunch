@@ -16,8 +16,6 @@ class RegisterClientRequest(AbstractSerializableRequest[bool, TCPPackageRequestS
         self.proposed_name = name
 
     def prepare_payload(self) -> RegisterClientRequestPayload:
-
-
         return {'name': self.proposed_name, 'addr': self.context.endpoint.socket._tcp_socket.getsockname()} # type: ignore
 
     def process_response(self, response):
